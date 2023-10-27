@@ -1,0 +1,35 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+canvas {
+  display: block;
+}
+button.btn-sort {
+  background-color: transparent;
+  color: white;
+  border: 1px solid rgb(200, 0, 200, 100);
+}
+button.btn-sort:disabled {
+  border: 1px solid grey;
+  background-color: grey;
+}
+
+button.btn-sort:hover {
+  background-color: rgb(108, 30, 108);
+  outline: none;
+  border: 1px solid rgb(200, 0, 200, 100);
+}
+
+button.btn-sort:disabled:hover {
+  border: 1px solid grey;
+  background-color: grey;
+}
+
+.custom-range {
+  width: 200px;
+}
+.custom-range::-webkit-slider-thumb {
+  background-color: rgb(200, 0, 200);
+}
