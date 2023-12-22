@@ -35,6 +35,11 @@ const displayAlgo = (algorithm) => {
     title = "Linear Regression";
     height = "700";
     width = "700";
+  } else if (algorithm === "mazeGenerator") {
+    src = "maze/index.html";
+    title = "Maze Generator";
+    height = "700";
+    width = "600";
   }
 
   displayAlgoEle.innerHTML = `

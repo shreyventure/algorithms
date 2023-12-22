@@ -16,6 +16,7 @@ var lines = [];
 
 var fr = 300;
 var wallsIntensity = 10;
+// var wallsIntensity = 30;
 var visualiseAlgo = true;
 
 function setup() {
@@ -67,6 +68,10 @@ function draw() {
     }
   } else if (foundPath === false) {
     console.log("Walls let me down. :(");
+    textSize(30);
+    textAlign(CENTER, CENTER);
+    fill(255, 0, 0);
+    text("Walls let me down. :(", width * 0.5, 80);
     noLoop();
   }
 
@@ -74,6 +79,10 @@ function draw() {
     showLine();
     if (traverse === start) {
       console.log("Found the optimal path! :)");
+      textSize(30);
+      textAlign(CENTER, CENTER);
+      fill(255);
+      text("Found the optimal path! :)", width * 0.5, 80);
       noLoop();
       return;
     }
@@ -103,8 +112,8 @@ function create() {
     }
   }
 
-  start = grid[floor(random(1, ((width / size) * width) / size))];
-  // start = grid[0];
+  // start = grid[floor(random(1, ((width / size) * width) / size))];
+  start = grid[0];
   while (end === null) {
     newEnd =
       grid[grid.length - floor(random(1, ((width / size) * width) / size))];
@@ -127,6 +136,7 @@ function heuristics(cell) {
 
 function createWalls() {
   for (var i = 0; i < rows; i++) {
+    // wallsIntensity -= 0.1;
     for (var j = 0; j < cols; j++) {
       for (k = 0; k < wallsIntensity; k++)
         if (j === floor(random(width / size)))
