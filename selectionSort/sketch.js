@@ -27,28 +27,31 @@ function setup() {
   frameRate(fr);
 
   swapCheckbox = createCheckbox("  Enhance Swapping", false);
-  swapCheckbox.position(30, windowHeight - 45);
+  swapCheckbox.position(30, windowHeight - 40);
   swapCheckbox.style("color: white;");
   swapCheckbox.changed(() => {
     apply_sleep = true;
   });
-  swapCheckbox.attribute("class", "ml-2");
 
   sortButton = createButton("Sort !");
   sortButton.position(windowWidth / 2, windowHeight - 50);
-  sortButton.attribute("class", "btn btn-primary py-2 btn-sort");
+  sortButton.size(90, 40);
+  sortButton.style(
+    "background-color : transparent; color : white; outline: none; border-color: rgb(200, 0, 200, 100); border-radius: 20px"
+  );
 
   slider = createSlider(3, 100, 40, 0);
-  slider.attribute("class", "custom-range");
-  slider.attribute("type", "range");
   slider.position(windowWidth / 4, windowHeight - 40);
+  slider.style("width: 200px; background: rgba(200, 0, 200, 100);");
 
   speedtext = createP("Frame rate: ");
-  speedtext.position((2.8 * windowWidth - 80) / 4, windowHeight - 40);
+  speedtext.position((2.8 * windowWidth - 80) / 4, windowHeight - 55);
   speedtext.style("color: white");
 
   selectFR = createSelect();
-  selectFR.attribute("class", "custom-select-sm");
+  selectFR.style(
+    "background : transparent; color : white; outline: none; border-color: rgb(200, 0, 200, 100); border-radius: 20px; padding-right: 20px; padding-left: 20px; padding-top: 10px; padding-bottom: 10px"
+  );
   selectFR.position((3 * windowWidth) / 4, windowHeight - 50);
   selectFR.option("High");
   selectFR.option("Medium");
@@ -62,7 +65,7 @@ function setup() {
 
   sortButton.mousePressed(() => {
     startSorting = true;
-    // sortButton.style("color : grey; border-color: grey;");
+    sortButton.style("color : grey; border-color: grey;");
     sortButton.attribute("disabled", true);
     slider.attribute("disabled", true);
     swapCheckbox.attribute("disabled", true);

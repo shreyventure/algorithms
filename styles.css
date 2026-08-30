@@ -617,6 +617,9 @@ kbd {
   gap: 24px;
   flex-wrap: wrap;
   padding: 12px 20px;
+  /* Fixed height so the stage — and therefore the canvas the sketch sized
+     itself to — doesn't jump when switching between algorithms. */
+  min-height: 84px;
   border-top: 1px solid var(--border-soft);
   background: var(--surface);
   font-size: 13px;
