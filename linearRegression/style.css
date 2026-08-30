@@ -1,0 +1,17 @@
+/* Match the sketch's background(51) and centre the fixed-size canvas. */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+  background-color: #333333;
+}
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+canvas {
+  display: block;
+}

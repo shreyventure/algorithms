@@ -1,19 +1,16 @@
+/* Match the sketch's background(50) and centre the fixed-size canvas. */
 html,
 body {
   margin: 0;
   padding: 0;
-  background-color: rgb(50, 50, 50);
   height: 100%;
+  overflow: hidden;
+  background-color: #323232;
 }
 body {
-  margin: 0;
   display: flex;
-
-  /* This centers our sketch horizontally. */
-  justify-content: space-evenly;
-
-  /* This centers our sketch vertically. */
   align-items: center;
+  justify-content: center;
 }
 canvas {
   display: block;
