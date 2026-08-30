@@ -30,7 +30,9 @@ function setup() {
   swapCheckbox.position(30, windowHeight - 40);
   swapCheckbox.style("color: white;");
   swapCheckbox.changed(() => {
-    apply_sleep = true;
+    // Follow the box both ways - assigning `true` here meant unticking it
+    // could never turn the slow-motion animation back off.
+    apply_sleep = swapCheckbox.checked();
   });
 
   sortButton = createButton("Sort !");

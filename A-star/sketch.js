@@ -130,8 +130,12 @@ function create() {
   openSet = [start];
 }
 
+// Diagonal steps cost the same as orthogonal ones (see tentativeScore below),
+// so the true remaining distance is the Chebyshev distance. A Euclidean
+// heuristic overestimates it, which makes A* inadmissible and lets it settle
+// for a path that isn't the shortest.
 function heuristics(cell) {
-  return sqrt(pow(end.i - cell.i, 2) + pow(end.j - cell.j, 2));
+  return max(abs(end.i - cell.i), abs(end.j - cell.j));
 }
 
 function createWalls() {
@@ -251,7 +255,7 @@ function getNeightbours(cell) {
     i - 1 >= 0 &&
     i - 1 < floor(width / size) &&
     j - 1 < floor(width / size) &&
-    j - 1 > 0
+    j - 1 >= 0
   ) {
     neighbours.push(grid[floor(width / size) * (i - 1) + (j - 1)]);
   }
@@ -269,7 +273,7 @@ function getNeightbours(cell) {
     i + 1 >= 0 &&
     i + 1 < floor(width / size) &&
     j - 1 < floor(width / size) &&
-    j - 1 > 0
+    j - 1 >= 0
   ) {
     neighbours.push(grid[floor(width / size) * (i + 1) + (j - 1)]);
   }

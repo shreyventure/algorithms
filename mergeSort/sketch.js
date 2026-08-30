@@ -30,7 +30,9 @@ function setup() {
   swapCheckbox.position(30, windowHeight - 40);
   swapCheckbox.style("color: white;");
   swapCheckbox.changed(() => {
-    apply_sleep = true;
+    // Follow the box both ways - assigning `true` here meant unticking it
+    // could never turn the slow-motion animation back off.
+    apply_sleep = swapCheckbox.checked();
   });
 
   sortButton = createButton("Sort !");
@@ -102,7 +104,10 @@ async function draw() {
 
     // MERGE SORT
 
-    if (curr_size < array.length - 1) {
+    // Must be <=, not <: when array.length - 1 is itself a power of two the
+    // final merge pass is the one with curr_size === array.length - 1, and
+    // skipping it leaves the last run unmerged (n = 3, 5, 9, 17, 33, ...).
+    if (curr_size <= array.length - 1) {
       for (
         let left_start = 0;
         left_start < array.length - 1;

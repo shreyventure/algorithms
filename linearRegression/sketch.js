@@ -4,11 +4,9 @@ var b = 0;
 
 // y = mx + b
 
-var x = 0;
-var y = 0;
-
 function setup() {
   createCanvas(600, 600);
+  seedPoints(40);
 }
 
 function draw() {
@@ -18,8 +16,21 @@ function draw() {
     fill(50, 200, 100, 200);
     ellipse(data[i].x, data[i].y, 8, 8);
   }
-  drawPoint();
   drawLine();
+}
+
+// Seed a correlated but noisy cloud once, so there is something to fit on
+// load. This used to be drawPoint(), called from draw() - it appended a point
+// every frame, so `data` grew without bound and the refit turned quadratic.
+// Its points also walked x and y up in equal steps, which pinned the fitted
+// line to the diagonal no matter what you clicked.
+function seedPoints(count) {
+  for (var i = 0; i < count; i++) {
+    var px = random(width);
+    var py = constrain(0.6 * px + 100 + random(-80, 80), 0, height);
+    data.push({ x: px, y: py });
+  }
+  if (data.length > 1) linearRegression();
 }
 
 function linearRegression() {
@@ -60,19 +71,9 @@ function drawLine() {
 }
 
 function mousePressed() {
+  // mousePressed fires for the whole window, not just the canvas.
+  if (mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height) return;
+
   data.push({ x: mouseX, y: mouseY });
   if (data.length > 1) linearRegression();
-  console.log(mouseX, mouseY);
-}
-
-function drawPoint() {
-  x += random(1, 30);
-  y += random(1, 30);
-  if (x >= width) x = 0;
-
-  if (y >= height) y = 0;
-
-  data.push({ x, y });
-  if (data.length > 1) linearRegression();
-  console.log(x, y);
 }
