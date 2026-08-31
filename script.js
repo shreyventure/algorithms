@@ -63,17 +63,17 @@ const ALGOS = [
     group: "Pathfinding",
     color: "var(--path)",
     src: "A-star/index.html",
-    fit: "fixed",
-    width: 500,
-    height: 500,
+    // Sizes itself to the frame: the canvas takes whatever the wrapping
+    // control panel leaves over, so the controls stay legible on a phone
+    // instead of being scaled down with the rest of the page.
+    fit: "fill",
     tags: ["heuristic search", "f = g + h"],
     blurb:
       "Explores a grid towards the goal by always expanding the cell with the lowest estimated total cost, giving the shortest path without checking everything.",
     controls: [
-      "Amber: start",
-      "Cyan: goal",
-      "Lime: explored",
-      "Purple: shortest path",
+      "Choose what to place, then click the grid",
+      "Slider sets wall density",
+      "Colour key is under the canvas",
     ],
   },
   {
@@ -82,11 +82,7 @@ const ALGOS = [
     group: "Pathfinding",
     color: "var(--path)",
     src: "maze/index.html",
-    // The grid is a hard-coded 20x20 of 30px cells, so the canvas is 600x600
-    // no matter how wide the frame is.
-    fit: "fixed",
-    width: 600,
-    height: 600,
+    fit: "fill",
     tags: ["DFS", "backtracking"],
     blurb:
       "Carves a perfect maze with randomised depth-first search: wander into unvisited cells, knocking down walls, and backtrack at dead ends.",
@@ -98,13 +94,15 @@ const ALGOS = [
     group: "Machine Learning",
     color: "var(--ml)",
     src: "linearRegression/index.html",
-    fit: "fixed",
-    width: 600,
-    height: 600,
+    fit: "fill",
     tags: ["least squares", "y = mx + b"],
     blurb:
       "Fits the line that minimises squared error across the points, refitting live as new data arrives.",
-    controls: ["Click the canvas to add a point", "Line refits instantly"],
+    controls: [
+      "Click the canvas to add a point",
+      "Press C to clear",
+      "Line refits instantly",
+    ],
   },
 ];
 
@@ -156,7 +154,6 @@ const buildNav = () => {
           <button class="nav-item" data-id="${algo.id}" style="--dot:${algo.color}">
             <span class="nav-dot"></span>
             <span>${algo.name}</span>
-            <span class="nav-key">${index}</span>
           </button>`
           )
           .join("")}
@@ -218,21 +215,35 @@ const renderHome = () => {
     </div>`;
 };
 
-/** Scale a fixed-size sketch down when the stage can't fit it. */
+/**
+ * Scale a fixed-size sketch down when the stage can't fit it, and shrink its
+ * wrapper to match so the layout box stays the same size as the visible one.
+ */
 const fitFrame = () => {
-  const frame = el.stage.querySelector(".sketch-frame:not(.is-fill)");
-  if (!frame) return;
+  const fit = el.stage.querySelector(".sketch-fit:not(.is-fill)");
+  if (!fit) return;
 
-  const pad = 40;
+  const frame = fit.querySelector(".sketch-frame");
   const w = Number(frame.dataset.w);
   const h = Number(frame.dataset.h);
-  const scale = Math.min(
-    1,
-    (el.stage.clientWidth - pad) / w,
-    (el.stage.clientHeight - pad) / h
-  );
+  if (!w || !h) return;
+
+  // Read the padding rather than assuming it - it changes at the breakpoint.
+  const cs = getComputedStyle(el.stage);
+  const availW =
+    el.stage.clientWidth -
+    parseFloat(cs.paddingLeft) -
+    parseFloat(cs.paddingRight);
+  const availH =
+    el.stage.clientHeight -
+    parseFloat(cs.paddingTop) -
+    parseFloat(cs.paddingBottom);
+
+  const scale = Math.min(1, availW / w, availH / h);
 
   frame.style.transform = scale < 1 ? `scale(${scale})` : "";
+  fit.style.width = Math.floor(w * scale) + "px";
+  fit.style.height = Math.floor(h * scale) + "px";
 };
 
 /**
@@ -285,16 +296,19 @@ const renderAlgo = (id) => {
   // Cache-bust so "Reload" restarts the sketch from a clean state.
   const src = `${algo.src}?t=${Date.now()}`;
 
+  const box = fill ? "" : `style="width:${algo.width}px;height:${algo.height}px"`;
+
   el.stage.innerHTML = `
-    <div class="sketch-frame is-loading ${fill ? "is-fill" : ""}"
-         data-w="${algo.width || 0}" data-h="${algo.height || 0}"
-         ${fill ? "" : `style="width:${algo.width}px;height:${algo.height}px"`}>
-      <iframe src="${src}" title="${algo.name} visualisation"
-              loading="eager" allow="fullscreen"></iframe>
-      <div class="spinner">Loading sketch…</div>
+    <div class="sketch-fit ${fill ? "is-fill" : ""}" ${box}>
+      <div class="sketch-frame is-loading ${fill ? "is-fill" : ""}"
+           data-w="${algo.width || 0}" data-h="${algo.height || 0}" ${box}>
+        <iframe src="${src}" title="${algo.name} visualisation"
+                loading="eager" allow="fullscreen"></iframe>
+        <div class="spinner">Loading sketch…</div>
+      </div>
     </div>`;
 
-  const frame = el.stage.firstElementChild;
+  const frame = el.stage.querySelector(".sketch-frame");
   frame.querySelector("iframe").addEventListener("load", () => {
     frame.classList.remove("is-loading");
   });

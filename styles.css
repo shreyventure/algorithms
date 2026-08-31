@@ -410,6 +410,22 @@ kbd {
   outline: none;
 }
 
+/* Sizing box for a fixed-size sketch. The frame inside keeps its natural
+   dimensions and is scaled with a transform; this wrapper is set to the
+   *scaled* size so the layout box matches what you see - otherwise a frame
+   wider than the stage overflows a centred flex container and the left half
+   becomes unreachable. flex: none stops the stage from shrinking it, which
+   would crop the canvas rather than scale it. */
+.sketch-fit {
+  flex: none;
+  display: block;
+}
+.sketch-fit.is-fill {
+  width: 100%;
+  height: 100%;
+  align-self: stretch;
+}
+
 /* Frame that holds the sketch iframe */
 .sketch-frame {
   position: relative;
@@ -418,12 +434,12 @@ kbd {
   border: 1px solid var(--border);
   background: #323232;
   box-shadow: var(--shadow);
+  transform-origin: top left;
   transition: opacity 0.2s ease;
 }
 .sketch-frame.is-fill {
   width: 100%;
   height: 100%;
-  align-self: stretch;
 }
 .sketch-frame iframe {
   display: block;
@@ -473,9 +489,10 @@ kbd {
   padding: 0;
   background: #323232;
 }
+.stage:fullscreen .sketch-fit,
 .stage:fullscreen .sketch-frame {
-  width: 100%;
-  height: 100%;
+  width: 100% !important;
+  height: 100% !important;
   border: 0;
   border-radius: 0;
   box-shadow: none;

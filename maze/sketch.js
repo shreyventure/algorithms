@@ -11,12 +11,19 @@ var flag = 1;
 
 var totalUnvisited;
 
+var offsetX = 0;
+var offsetY = 0;
+
 function setup() {
-  //createCanvas(600, 600);
   createCanvas(windowWidth, windowHeight);
-  //   frameRate(20);
-  cols = 20; //floor(width / w);
-  rows = 20; //floor(height / w);
+
+  // Fill whatever the frame gives us instead of a hard-coded 20x20, and centre
+  // the leftover pixels so the maze isn't jammed against the top-left corner.
+  cols = max(5, floor(width / w));
+  rows = max(5, floor(height / w));
+  offsetX = (width - cols * w) / 2;
+  offsetY = (height - rows * w) / 2;
+
   totalUnvisited = cols * rows - 1;
 
   for (let j = 0; j < rows; j++) {
@@ -115,8 +122,8 @@ function Cell(i, j) {
   this.show = function () {
     stroke(255);
 
-    var x = this.i * w;
-    var y = this.j * w;
+    var x = offsetX + this.i * w;
+    var y = offsetY + this.j * w;
     if (this.walls[0]) line(x, y, x + w, y);
     if (this.walls[1]) line(x + w, y, x + w, y + w);
     if (this.walls[2]) line(x + w, y + w, x, y + w);
@@ -125,13 +132,13 @@ function Cell(i, j) {
     if (this.visited) {
       noStroke();
       fill(this.R, this.G, this.B, this.A);
-      rect(this.i * w, this.j * w, w, w);
+      rect(x, y, w, w);
     }
   };
 
   this.highlight = function (R, G, B, A) {
-    var x = this.i * w;
-    var y = this.j * w;
+    var x = offsetX + this.i * w;
+    var y = offsetY + this.j * w;
 
     noStroke();
     fill(R, G, B, A);

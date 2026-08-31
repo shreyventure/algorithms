@@ -5,7 +5,7 @@ var b = 0;
 // y = mx + b
 
 function setup() {
-  createCanvas(600, 600);
+  createCanvas(windowWidth, windowHeight);
   seedPoints(40);
 }
 
@@ -16,7 +16,38 @@ function draw() {
     fill(50, 200, 100, 200);
     ellipse(data[i].x, data[i].y, 8, 8);
   }
-  drawLine();
+  if (data.length > 1) drawLine();
+  drawOverlay();
+}
+
+// On-canvas readout and instructions, so the sketch explains itself when it is
+// opened on its own rather than inside the gallery shell.
+function drawOverlay() {
+  noStroke();
+  textAlign(LEFT, TOP);
+
+  if (data.length > 1) {
+    textSize(15);
+    fill(200, 0, 200);
+    text("y = " + nf(m, 1, 2) + "x " + (b < 0 ? "- " : "+ ") + nf(abs(b), 1, 1), 16, 14);
+  }
+
+  textSize(12);
+  fill(150);
+  text(data.length + (data.length === 1 ? " point" : " points"), 16, 38);
+
+  textAlign(CENTER, BOTTOM);
+  textSize(13);
+  fill(170);
+  text("Click anywhere to add a point   ·   Press C to clear", width / 2, height - 14);
+}
+
+function keyPressed() {
+  if (key === "c" || key === "C") {
+    data = [];
+    m = 0;
+    b = 0;
+  }
 }
 
 // Seed a correlated but noisy cloud once, so there is something to fit on
@@ -24,10 +55,16 @@ function draw() {
 // every frame, so `data` grew without bound and the refit turned quadratic.
 // Its points also walked x and y up in equal steps, which pinned the fitted
 // line to the diagonal no matter what you clicked.
+// Proportional to the canvas rather than tuned to a 600x600 square, so the
+// cloud keeps the same shape whatever aspect ratio the frame gives us.
 function seedPoints(count) {
   for (var i = 0; i < count; i++) {
     var px = random(width);
-    var py = constrain(0.6 * px + 100 + random(-80, 80), 0, height);
+    var py = constrain(
+      height * 0.18 + (px / width) * height * 0.6 + random(-1, 1) * height * 0.13,
+      6,
+      height - 6
+    );
     data.push({ x: px, y: py });
   }
   if (data.length > 1) linearRegression();
